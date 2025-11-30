@@ -1,12 +1,11 @@
-# Default values for the NGINX chart
 env: dev
 namespace: dev
-host: nginx.webhop.me
+host: dev-app.webhop.me
 names:
-  app: dev-nginx
-  configmap: dev-nginx-html-configmap
-  deployment: dev-nginx-deployment
-  service: dev-nginx-service
-  secret: dev-nginx-secret
-  certificate: dev-nginx-certificate
-  ingress: dev-nginx-ingress
+  app: nginx
+  configmap: nginx-html-configmap
+  deployment: nginx-deployment
+  service: nginx-service
+  secret: nginx-secret
+  certificate: nginx-certificate
+  ingress: nginx-ingress
