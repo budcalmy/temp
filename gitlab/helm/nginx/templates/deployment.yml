@@ -1,17 +1,23 @@
+{{- $env := .Values.env | default "dev" }}
+{{- $namespace := .Values.namespace | default "default" }}
+{{- $appName := .Values.names.app | default (printf "%s-nginx" $env) }}
+{{- $deploymentName := .Values.names.deployment | default (printf "%s-deployment" $appName) }}
+{{- $configSecretName := .Values.names.secret | default (printf "%s-secret" $appName) }}
+{{- $htmlConfigMapName := .Values.names.configmap | default (printf "%s-html-configmap" $appName) }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: nginx-main
-  namespace: default
+  name: {{ $deploymentName }}
+  namespace: {{ $namespace }}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: nginx-main
+      app: {{ $appName }}
   template:
     metadata:
       labels:
-        app: nginx-main
+        app: {{ $appName }}
     spec:
       containers:
       - name: nginx
@@ -19,13 +25,12 @@ spec:
         ports:
         - containerPort: 8080
 
-      
         startupProbe:
           httpGet:
             path: /
             port: 8080
           periodSeconds: 5
-          failureThreshold: 30  
+          failureThreshold: 30
 
         readinessProbe:
           httpGet:
@@ -34,7 +39,7 @@ spec:
           initialDelaySeconds: 5
           periodSeconds: 10
           failureThreshold: 3
-          
+
         livenessProbe:
           httpGet:
             path: /
@@ -60,7 +65,7 @@ spec:
       volumes:
       - name: nginx-config-secret
         secret:
-          secretName: nginx-config-secret
+          secretName: {{ $configSecretName }}
       - name: nginx-html-configmap
         configMap:
-          name: nginx-html-configmap
+          name: {{ $htmlConfigMapName }}

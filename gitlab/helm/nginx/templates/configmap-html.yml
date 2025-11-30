@@ -1,8 +1,12 @@
+{{- $env := .Values.env | default "dev" }}
+{{- $namespace := .Values.namespace | default "default" }}
+{{- $appName := .Values.names.app | default (printf "%s-nginx" $env) }}
+{{- $htmlConfigMapName := .Values.names.configmap | default (printf "%s-html-configmap" $appName) }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: nginx-html-configmap
-  namespace: default
+  name: {{ $htmlConfigMapName }}
+  namespace: {{ $namespace }}
 data:
   blue.html: |-
     <!DOCTYPE html>

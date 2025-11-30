@@ -1,8 +1,14 @@
+{{- $env := .Values.env | default "dev" }}
+{{- $host := .Values.host | default "nginx.webhop.me" }}
+{{- $namespace := .Values.namespace | default "default" }}
+{{- $appName := .Values.names.app | default (printf "%s-nginx" $env) }}
+{{- $ingressName := .Values.names.ingress | default (printf "%s-ingress" $appName) }}
+{{- $serviceName := .Values.names.service | default (printf "%s-service" $appName) }}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: nginx-https-ingress
-  namespace: default
+  name: {{ $ingressName }}
+  namespace: {{ $namespace }}
   annotations:
     cert-manager.io/cluster-issuer: "letsencrypt-prod"
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
@@ -10,16 +16,16 @@ spec:
   ingressClassName: ingress-nginx-class
   tls:
   - hosts:
-    - nginx.webhop.me
-    secretName: nginx-tls
+    - {{ $host }}
+    secretName: {{ printf "%s-tls" $appName }}
   rules:
-  - host: nginx.webhop.me
+  - host: {{ $host }}
     http:
       paths:
       - path: /
         pathType: Prefix
         backend:
           service:
-            name: nginx-main
+            name: {{ $serviceName }}
             port:
               number: 8080

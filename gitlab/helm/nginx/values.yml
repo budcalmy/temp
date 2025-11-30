@@ -1,6 +1,7 @@
+# Default values for the NGINX chart
 env: dev
 namespace: dev
-host: dev-nginx.webhop.me
+host: nginx.webhop.me
 names:
   app: dev-nginx
   configmap: dev-nginx-html-configmap

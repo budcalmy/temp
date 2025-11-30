@@ -1,20 +1,25 @@
+{{- $env := .Values.env | default "dev" }}
+{{- $namespace := .Values.namespace | default "default" }}
+{{- $appName := .Values.names.app | default (printf "%s-apache" $env) }}
+{{- $deploymentName := .Values.names.deployment | default (printf "%s-deployment" $appName) }}
+{{- $configMapName := .Values.names.configmap | default (printf "%s-configmap" $appName) }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: apache-main
-  namespace: default
+  name: {{ $deploymentName }}
+  namespace: {{ $namespace }}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: apache-main
+      app: {{ $appName }}
   template:
     metadata:
       labels:
-        app: apache-main
+        app: {{ $appName }}
     spec:
       containers:
-      - name: apache-main
+      - name: {{ $appName }}
         image: budcalmy/task18-apache:latest
         ports:
         - containerPort: 80
@@ -23,7 +28,7 @@ spec:
             path: /
             port: 80
           periodSeconds: 5
-          failureThreshold: 30  
+          failureThreshold: 30
         readinessProbe:
           httpGet:
             path: /
@@ -46,4 +51,4 @@ spec:
       volumes:
       - name: my-apache-config
         configMap:
-          name: my-apache-config
+          name: {{ $configMapName }}
