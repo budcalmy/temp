@@ -1,13 +1,18 @@
+{{- $env := .Values.env | default "dev" }}
+{{- $host := .Values.host | default "nginx.webhop.me" }}
+{{- $namespace := .Values.namespace | default "default" }}
+{{- $appName := .Values.names.app | default (printf "%s-nginx" $env) }}
+{{- $certificateName := .Values.names.certificate | default (printf "%s-certificate" $appName) }}
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: nginx-tls
-  namespace: default
+  name: {{ $certificateName }}
+  namespace: {{ $namespace }}
 spec:
-  secretName: nginx-tls
+  secretName: {{ printf "%s-tls" $appName }}
   issuerRef:
     name: letsencrypt-prod
     kind: ClusterIssuer
-  commonName: nginx.webhop.me
+  commonName: {{ $host }}
   dnsNames:
-  - nginx.webhop.me
+  - {{ $host }}

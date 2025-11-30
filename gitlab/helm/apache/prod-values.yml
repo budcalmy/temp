@@ -1,0 +1,7 @@
+env: prod
+namespace: prod
+names:
+  app: prod-apache
+  configmap: prod-apache-configmap
+  deployment: prod-apache-deployment
+  service: prod-apache-service
