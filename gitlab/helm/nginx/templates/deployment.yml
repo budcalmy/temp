@@ -61,6 +61,8 @@ spec:
         - name: nginx-config-secret
           mountPath: /etc/nginx/conf.d/blue.conf
           subPath: blue.conf
+        - name: nginx-html-configmap
+          mountPath: /usr/share/nginx/html
 
       volumes:
       - name: nginx-config-secret
