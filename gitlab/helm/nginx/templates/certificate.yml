@@ -3,13 +3,14 @@
 {{- $namespace := .Values.namespace | default "default" }}
 {{- $appName := .Values.names.app | default (printf "%s-nginx" $env) }}
 {{- $certificateName := .Values.names.certificate | default (printf "%s-certificate" $appName) }}
+{{- $configSecretName := .Values.names.secret | default (printf "%s-secret" $appName) }}
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
   name: {{ $certificateName }}
   namespace: {{ $namespace }}
 spec:
-  secretName: {{ printf "%s-tls" $appName }}
+  secretName: {{ $configSecretName }}
   issuerRef:
     name: letsencrypt-prod
     kind: ClusterIssuer
