@@ -2,7 +2,7 @@
 env: dev
 namespace: dev
 names:
-  app: apache
+  app: apache-main
   configmap: apache-configmap
   deployment: apache-deployment
-  service: apache-service
+  service: apache-main

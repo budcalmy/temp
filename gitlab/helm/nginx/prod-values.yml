@@ -6,7 +6,7 @@ names:
   configmap: nginx-html-configmap
   deployment: nginx-deployment
   service: nginx-service
-  secret: nginx-secret
+  secret: nginx-config-secret
   tlsSecret: nginx-tls-secret
   certificate: nginx-certificate
   ingress: nginx-ingress

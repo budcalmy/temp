@@ -1,5 +1,5 @@
 {{- $env := .Values.env | default "dev" }}
-{{- $host := .Values.host | default "nginx.webhop.me" }}
+{{- $host := .Values.host }}
 {{- $namespace := .Values.namespace | default "default" }}
 {{- $appName := .Values.names.app | default (printf "%s-nginx" $env) }}
 {{- $ingressName := .Values.names.ingress | default (printf "%s-ingress" $appName) }}
