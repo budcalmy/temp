@@ -7,5 +7,6 @@ names:
   deployment: nginx-deployment
   service: nginx-service
   secret: nginx-secret
+  tlsSecret: nginx-tls-secret
   certificate: nginx-certificate
   ingress: nginx-ingress

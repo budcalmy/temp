@@ -1,3 +1,12 @@
 env: prod
 namespace: prod
 host: prod-app.webhop.me
+names:
+  app: nginx
+  configmap: nginx-html-configmap
+  deployment: nginx-deployment
+  service: nginx-service
+  secret: nginx-secret
+  tlsSecret: nginx-tls-secret
+  certificate: nginx-certificate
+  ingress: nginx-ingress

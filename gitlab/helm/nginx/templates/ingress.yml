@@ -4,7 +4,7 @@
 {{- $appName := .Values.names.app | default (printf "%s-nginx" $env) }}
 {{- $ingressName := .Values.names.ingress | default (printf "%s-ingress" $appName) }}
 {{- $serviceName := .Values.names.service | default (printf "%s-service" $appName) }}
-{{- $configSecretName := .Values.names.secret | default (printf "%s-secret" $appName) }}
+{{- $tlsSecretName := .Values.names.tlsSecret | default (printf "%s-tls-secret" $appName) }}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -18,7 +18,7 @@ spec:
   tls:
   - hosts:
     - {{ $host }}
-    secretName: {{ $configSecretName }}
+    secretName: {{ $tlsSecretName }}
   rules:
   - host: {{ $host }}
     http:
