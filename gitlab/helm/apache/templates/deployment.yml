@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: apache-main
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: apache-main
+  template:
+    metadata:
+      labels:
+        app: apache-main
+    spec:
+      containers:
+      - name: apache-main
+        image: budcalmy/task18-apache:latest
+        ports:
+        - containerPort: 80
+        startupProbe:
+          httpGet:
+            path: /
+            port: 80
+          periodSeconds: 5
+          failureThreshold: 30  
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          failureThreshold: 3
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 15
+          periodSeconds: 10
+          failureThreshold: 3
+        volumeMounts:
+        - name: my-apache-config
+          mountPath: /etc/apache2/conf.d/000-default.conf
+          subPath: 000-default.conf
+
+      volumes:
+      - name: my-apache-config
+        configMap:
+          name: my-apache-config

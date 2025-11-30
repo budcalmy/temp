@@ -1,0 +1,66 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-main
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx-main
+  template:
+    metadata:
+      labels:
+        app: nginx-main
+    spec:
+      containers:
+      - name: nginx
+        image: budcalmy/task18-nginx:latest
+        ports:
+        - containerPort: 8080
+
+      
+        startupProbe:
+          httpGet:
+            path: /
+            port: 8080
+          periodSeconds: 5
+          failureThreshold: 30  
+
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 8080
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          failureThreshold: 3
+          
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 8080
+          initialDelaySeconds: 15
+          periodSeconds: 10
+          failureThreshold: 3
+
+        volumeMounts:
+        - name: nginx-config-secret
+          mountPath: /etc/nginx/nginx.conf
+          subPath: nginx.conf
+        - name: nginx-config-secret
+          mountPath: /etc/nginx/conf.d/default.conf
+          subPath: default.conf
+        - name: nginx-config-secret
+          mountPath: /etc/nginx/conf.d/red.conf
+          subPath: red.conf
+        - name: nginx-config-secret
+          mountPath: /etc/nginx/conf.d/blue.conf
+          subPath: blue.conf
+
+      volumes:
+      - name: nginx-config-secret
+        secret:
+          secretName: nginx-config-secret
+      - name: nginx-html-configmap
+        configMap:
+          name: nginx-html-configmap

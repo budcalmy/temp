@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: my-apache-config
+  namespace: default
+data:
+  000-default.conf: |
+    <VirtualHost *:80>
+        DocumentRoot /var/www/html
+
+        <Directory /var/www/html>
+            Options Indexes FollowSymLinks
+            AllowOverride None
+            Require all granted
+        </Directory>
+
+        DirectoryIndex index.php index.html
+
+        <FilesMatch \.php$>
+            SetHandler "proxy:fcgi://127.0.0.1:9000"
+        </FilesMatch>
+
+        ErrorLog /dev/stderr
+        CustomLog /dev/stdout combined
+
+    </VirtualHost>

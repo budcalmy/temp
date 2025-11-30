@@ -1,0 +1,69 @@
+version: '3.8'
+
+services:
+
+  gitlab:
+    image: gitlab/gitlab-ce:17.5.3-ce.0
+    restart: unless-stopped
+    hostname: "gitlab.local"
+    environment:
+      TZ: "UTC"
+      GITLAB_OMNIBUS_CONFIG: |
+        external_url 'https://self-gitlab.webhop.me'
+        gitlab_rails['gitlab_shell_ssh_port'] = 2222
+
+        letsencrypt['enable'] = true
+
+        # Disable monitoring/exporters to save RAM
+        prometheus['enable'] = false
+        prometheus_monitoring['enable'] = false
+        alertmanager['enable'] = false
+        gitlab_exporter['enable'] = false
+        node_exporter['enable'] = false
+        redis_exporter['enable'] = false
+        postgres_exporter['enable'] = false
+
+        # Disable optional services
+        gitlab_kas['enable'] = false
+        registry['enable'] = false
+        gitlab_pages['enable'] = false
+        gitlab_rails['lfs_enabled'] = false
+
+        # Sidekiq tuning
+        sidekiq['concurrency'] = 5
+        sidekiq['max_concurrency'] = 10
+
+        # PostgreSQL tuning for low memory
+        postgresql['shared_buffers'] = "128MB"
+        postgresql['max_connections'] = 20
+        postgresql['work_mem'] = "8MB"
+        postgresql['maintenance_work_mem'] = "16MB"
+        postgresql['effective_cache_size'] = "256MB"
+
+    ports:
+      - "80:80"
+      - "443:443"
+      - "2222:22"
+    volumes:
+      - ./config:/etc/gitlab
+      - ./logs:/var/log/gitlab
+      - ./data:/var/opt/gitlab
+    shm_size: "256m"
+    
+    mem_limit: 4g
+    mem_reservation: 2.5g
+    memswap_limit: 10g
+    cpus: 2.0
+
+    healthcheck:
+      test: ["CMD", "/opt/gitlab/bin/gitlab-healthcheck", "--fail"]
+      interval: 60s
+      timeout: 30s
+      retries: 5
+      start_period: 300s
+    
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
