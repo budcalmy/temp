@@ -1,0 +1,21 @@
+default:
+  artifacts:
+    expire_in: "2 days"
+  cache:
+    policy: pull-push
+
+stages:
+  - validate
+  - build
+  - deploy
+  - cleanup
+
+variables:
+  DOCKER_BUILDKIT: "1"
+
+  DOCKER_REGISTRY: "docker.io"
+  DOCKER_NGINX_IMAGE: "budcalmy/task18-nginx"   
+  DOCKER_APACHE_IMAGE: "budcalmy/task18-apache"   
+
+  K8S_DEPLOYMENT_NAME_NGINX: "nginx"              
+  K8S_CONTAINER_NAME_NGINX: "task18-nginx"              
