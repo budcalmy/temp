@@ -1,0 +1,14 @@
+[init]
+	defaultBranch = none
+[fetch]
+	recurseSubmodules = false
+[credential]
+	interactive = never
+[gc]
+	autoDetach = false
+[http]
+	extraHeader = X-Gitaly-Correlation-ID: 01KBCKMK65PNPWHZXFY80K5EVJ
+[transfer]
+	bundleURI = true
+[http "https://self-gitlab.webhop.me"]
+	sslCAInfo = /Users/budcalmy/Documents/Obsidian Vault/block-src/task21_src/builds/9JJsuNzQs/0/root/task21.tmp/CI_SERVER_TLS_CA_FILE

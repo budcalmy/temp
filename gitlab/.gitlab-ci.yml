@@ -5,10 +5,9 @@ default:
     policy: pull-push
 
 stages:
-  - validate
   - build
-  - deploy
-  - cleanup
+  # - deploy
+  # - cleanup
 
 variables:
   DOCKER_BUILDKIT: "1"
@@ -21,10 +20,28 @@ variables:
   K8S_DEPLOYMENT_NAME_APACHE: "apache-deploy"
 
   K8S_CONTAINER_NAME_NGINX: "nginx"
-  K8S_CONTAINER_NAME_APACHE: "apache-main"       
+  K8S_CONTAINER_NAME_APACHE: "apache-main"
 
   HELM_VALUES_PATH_DEV_NGINX: "helm/nginx/values.yaml"
   HELM_VALUES_PATH_DEV_APACHE: "helm/apache/values.yaml"
 
   HELM_VALUES_PATH_PROD_NGINX: "helm/nginx/prod-values.yml"
   HELM_VALUES_PATH_PROD_APACHE: "helm/apache/prod-values.yml"
+
+build-and-push-images:
+  stage: build
+  tags:
+    - macos-runner
+  before_script:
+    - echo "$DOCKERHUB_TOKEN" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
+  script:
+    - docker buildx create --name multiarch --use || docker buildx use multiarch
+    - docker buildx inspect --bootstrap
+    - |
+      docker buildx build \
+        --platform linux/amd64 \
+        -t "$DOCKER_NGINX_IMAGE:$CI_COMMIT_SHORT_SHA" \
+        -t "$DOCKER_NGINX_IMAGE:latest" \
+        --push ./src/.
+  after_script:
+    - docker logout
