@@ -1,6 +1,9 @@
 # Default values for the Apache chart
 env: dev
 namespace: dev
+image:
+  repository: budcalmy/task18-apache
+  tag: latest
 names:
   app: apache-main
   configmap: apache-configmap

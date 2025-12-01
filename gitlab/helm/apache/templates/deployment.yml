@@ -3,6 +3,8 @@
 {{- $appName := .Values.names.app }}
 {{- $deploymentName := .Values.names.deployment | default (printf "%s-deployment" $appName) }}
 {{- $configMapName := .Values.names.configmap | default (printf "%s-configmap" $appName) }}
+{{- $imageRepository := .Values.image.repository | default "budcalmy/task18-apache" }}
+{{- $imageTag := .Values.image.tag | default "latest" }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -20,7 +22,7 @@ spec:
     spec:
       containers:
       - name: {{ $appName }}
-        image: budcalmy/task18-apache:latest
+        image: {{ printf "%s:%s" $imageRepository $imageTag }}
         ports:
         - containerPort: 80
         startupProbe:

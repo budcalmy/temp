@@ -1,6 +1,9 @@
 env: prod
 namespace: prod
 host: prod-app.webhop.me
+image:
+  repository: budcalmy/task18-nginx
+  tag: latest
 names:
   app: nginx
   configmap: nginx-html-configmap
