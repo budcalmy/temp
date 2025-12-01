@@ -12,10 +12,19 @@ stages:
 
 variables:
   DOCKER_BUILDKIT: "1"
-
   DOCKER_REGISTRY: "docker.io"
-  DOCKER_NGINX_IMAGE: "budcalmy/task18-nginx"   
-  DOCKER_APACHE_IMAGE: "budcalmy/task18-apache"   
 
-  K8S_DEPLOYMENT_NAME_NGINX: "nginx"              
-  K8S_CONTAINER_NAME_NGINX: "task18-nginx"              
+  DOCKER_NGINX_IMAGE: "budcalmy/task18-nginx"
+  DOCKER_APACHE_IMAGE: "budcalmy/task18-apache"
+
+  K8S_DEPLOYMENT_NAME_NGINX: "nginx"
+  K8S_DEPLOYMENT_NAME_APACHE: "apache"
+
+  K8S_CONTAINER_NAME_NGINX: "task18-nginx"
+  K8S_CONTAINER_NAME_APACHE: "task18-apache"       
+
+  HELM_VALUES_PATH_DEV_NGINX: "helm/nginx/values.yaml"
+  HELM_VALUES_PATH_DEV_APACHE: "helm/apache/values.yaml"
+
+  HELM_VALUES_PATH_PROD_NGINX: "helm/nginx/prod-values.yml"
+  HELM_VALUES_PATH_PROD_APACHE: "helm/apache/prod-values.yml"

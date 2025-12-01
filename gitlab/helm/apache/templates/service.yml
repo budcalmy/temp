@@ -1,11 +1,10 @@
 {{- $env := .Values.env | default "dev" }}
 {{- $namespace := .Values.namespace | default "default" }}
-{{- $appName := .Values.names.app | default (printf "%s-apache" $env) }}
-{{- $serviceName := .Values.names.service | default (printf "%s-service" $appName) }}
+{{- $appName := .Values.names.app }}
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ $serviceName }}
+  name: {{ $appName }}
   namespace: {{ $namespace }}
 spec:
   selector:

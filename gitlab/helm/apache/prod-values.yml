@@ -4,4 +4,3 @@ names:
   app: apache-main
   configmap: apache-configmap
   deployment: apache-deployment
-  service: apache-main
