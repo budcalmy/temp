@@ -8,5 +8,4 @@ names:
   service: nginx-service
   secret: nginx-config-secret
   tlsSecret: nginx-tls-secret
-  certificate: nginx-certificate
   ingress: nginx-ingress

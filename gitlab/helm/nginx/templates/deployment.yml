@@ -68,6 +68,3 @@ spec:
       - name: nginx-config-secret
         secret:
           secretName: {{ $configSecretName }}
-      - name: nginx-html-configmap
-        configMap:
-          name: {{ $htmlConfigMapName }}
