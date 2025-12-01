@@ -1,6 +1,9 @@
 env: dev
 namespace: dev
 host: dev-app.webhop.me
+image:
+  repository: budcalmy/task18-nginx
+  tag: latest
 names:
   app: nginx
   configmap: nginx-html-configmap
