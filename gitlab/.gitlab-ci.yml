@@ -7,6 +7,7 @@ default:
 stages:
   - build
   - deploy
+  - cleanup
 
 variables:
   DOCKER_BUILDKIT: "1"
@@ -79,3 +80,33 @@ deploy-prod:
   script:
     - helm upgrade --install "$K8S_DEPLOYMENT_NAME_NGINX" ./helm/nginx --namespace "$K8S_NAMESPACE_PROD" --values "$HELM_VALUES_PATH_PROD_NGINX" --set image.repository="$DOCKER_NGINX_IMAGE" --set image.tag="$CI_COMMIT_SHORT_SHA"
     - helm upgrade --install "$K8S_DEPLOYMENT_NAME_APACHE" ./helm/apache --namespace "$K8S_NAMESPACE_PROD" --values "$HELM_VALUES_PATH_PROD_APACHE" --set image.repository="$DOCKER_APACHE_IMAGE" --set image.tag="$CI_COMMIT_SHORT_SHA"
+
+
+cleanup:
+  stage: cleanup
+  tags:
+    - macos-runner
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "schedule"'
+    - if: '$CI_COMMIT_BRANCH == "dev"'
+  script:
+    - echo "Cleaning only images related to project…"
+
+    - docker images || true
+
+    - |
+      for IMG in $(docker images "$DOCKER_NGINX_IMAGE" --format "{{.Repository}}:{{.Tag}}"); do
+        echo "Removing $IMG..."
+        docker rmi -f "$IMG" || true
+      done
+
+    - |
+      for IMG in $(docker images "$DOCKER_APACHE_IMAGE" --format "{{.Repository}}:{{.Tag}}"); do
+        echo "Removing $IMG..."
+        docker rmi -f "$IMG" || true
+      done
+
+    - docker buildx prune -f --filter "unused-for=72h" || true
+
+    - docker builder prune -f || true
+
