@@ -36,8 +36,6 @@ build-and-push-images:
     - macos-runner
   rules:
     - if: '$CI_COMMIT_BRANCH == "dev"'
-    - if: '$CI_COMMIT_BRANCH == "main"'
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "main"'
   before_script:
     - echo "$DOCKERHUB_TOKEN" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
   script:
@@ -54,23 +52,14 @@ build-and-push-images:
 
 deploy-dev:
   stage: deploy
-  image: dtzar/helm-kubectl:3.12.0
+  tags:
+    - macos-runner
   needs:
     - job: build-and-push-images
       artifacts: false
   rules:
     - if: '$CI_COMMIT_BRANCH == "dev"'
   before_script:
-    - export KUBECONFIG="$CI_PROJECT_DIR/kubeconfig"
-    - |
-      if echo "$KUBE_CONFIG" | base64 -d > "$KUBECONFIG" 2>/dev/null; then
-        echo "KUBECONFIG decoded from base64"
-      else
-        echo "$KUBE_CONFIG" > "$KUBECONFIG"
-      fi
-    - chmod 600 "$KUBECONFIG"
-    - kubectl version --client
-    - helm version
     - kubectl create namespace "$K8S_NAMESPACE_DEV" --dry-run=client -o yaml | kubectl apply -f -
   script:
     - helm upgrade --install "$K8S_DEPLOYMENT_NAME_NGINX" ./helm/nginx --namespace "$K8S_NAMESPACE_DEV" --values "$HELM_VALUES_PATH_DEV_NGINX" --set image.repository="$DOCKER_NGINX_IMAGE" --set image.tag="$CI_COMMIT_SHORT_SHA"
@@ -86,16 +75,6 @@ deploy-prod:
     - if: '$CI_COMMIT_BRANCH == "main"'
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "main"'
   before_script:
-    - export KUBECONFIG="$CI_PROJECT_DIR/kubeconfig"
-    - |
-      if echo "$KUBE_CONFIG" | base64 -d > "$KUBECONFIG" 2>/dev/null; then
-        echo "KUBECONFIG decoded from base64"
-      else
-        echo "$KUBE_CONFIG" > "$KUBECONFIG"
-      fi
-    - chmod 600 "$KUBECONFIG"
-    - kubectl version --client
-    - helm version
     - kubectl create namespace "$K8S_NAMESPACE_PROD" --dry-run=client -o yaml | kubectl apply -f -
   script:
     - helm upgrade --install "$K8S_DEPLOYMENT_NAME_NGINX" ./helm/nginx --namespace "$K8S_NAMESPACE_PROD" --values "$HELM_VALUES_PATH_PROD_NGINX" --set image.repository="$DOCKER_NGINX_IMAGE" --set image.tag="$CI_COMMIT_SHORT_SHA"
